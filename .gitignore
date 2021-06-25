@@ -1,2 +1,6 @@
 .env
 node_modules/
+.DS_Store
+uploads/hospitals/*
+uploads/doctors/*
+uploads/users/*
