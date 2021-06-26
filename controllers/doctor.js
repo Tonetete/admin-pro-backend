@@ -1,6 +1,6 @@
 const { response } = require("express");
 const Doctor = require("../models/doctor");
-const hospital = require("../models/hospital");
+const Hospital = require("../models/hospital");
 
 const getDoctors = async (req, res = response) => {
   const doctors = await Doctor.find()
@@ -18,12 +18,12 @@ const createDoctor = async (req, res = response) => {
   const hospital_id = req.body.hospital;
 
   try {
-    const hospitalDB = await hospital.findById(hospital_id);
+    const hospitalDB = await Hospital.findById(hospital_id);
 
     if (!hospitalDB) {
       res.status(404).json({
         ok: false,
-        msg: "hospital not found with this id",
+        msg: "Missing 'hospital' field or not found.",
       });
     }
 
@@ -48,18 +48,80 @@ const createDoctor = async (req, res = response) => {
   }
 };
 
-const updateDoctor = (req, res = response) => {
-  res.json({
-    ok: true,
-    msg: "Update Doctor",
-  });
+const updateDoctor = async (req, res = response) => {
+  try {
+    const { id } = req.params;
+    const { uid } = req;
+    const hospital_id = req.body.hospital;
+
+    const hospitalDB = await Hospital.findById(hospital_id);
+
+    if (!hospitalDB) {
+      res.status(404).json({
+        ok: false,
+        msg: "Missing 'hospital' field or not found.",
+      });
+    }
+
+    const doctorDB = await Doctor.findById(id);
+
+    if (!doctorDB) {
+      res.status(404).json({
+        ok: false,
+        msg: "Doctor not found.",
+      });
+    }
+
+    const doctorChanges = {
+      ...req.body,
+      user: uid,
+      hospital: hospital_id,
+    };
+
+    const doctorUpdated = await Doctor.findByIdAndUpdate(id, doctorChanges, {
+      new: true,
+    });
+
+    res.status(200).json({
+      ok: true,
+      msg: "Doctor updated.",
+      doctor: doctorUpdated,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      ok: false,
+      msg: "Unexpected error. Check logs.",
+    });
+  }
 };
 
-const deleteDoctor = (req, res = response) => {
-  res.json({
-    ok: true,
-    msg: "Delete Doctor",
-  });
+const deleteDoctor = async (req, res = response) => {
+  const { id } = req.params;
+  try {
+    const doctorDB = await Doctor.findById(id);
+
+    if (!doctorDB) {
+      return res.send(404).json({
+        ok: false,
+        msg: "Doctor not found.",
+      });
+    }
+
+    await Doctor.findByIdAndDelete(id);
+
+    res.json({
+      ok: true,
+      msg: "Doctor deleted.",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Unexpected error. Please check logs",
+    });
+  }
 };
 
 module.exports = {

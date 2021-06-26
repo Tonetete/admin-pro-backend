@@ -24,8 +24,16 @@ router.post(
   createDoctor
 );
 
-router.put("/:id", [], updateDoctor);
+router.put(
+  "/:id",
+  [
+    validateJWT,
+    check("name", "name field is mandatory").not().isEmpty(),
+    validateFields,
+  ],
+  updateDoctor
+);
 
-router.delete("/:id", deleteDoctor);
+router.delete("/:id", validateJWT, deleteDoctor);
 
 module.exports = { router };
