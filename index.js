@@ -23,6 +23,9 @@ app.use(express.json());
 // Database
 dbConnection();
 
+// Public directory
+app.use(express.static("public"));
+
 // Routes
 app.use("/api/users", routerUser);
 app.use("/api/hospitals", routerHospital);
