@@ -1,12 +1,28 @@
 const { Router } = require("express");
-const { check } = require("express-validator");
+const { query } = require("express-validator");
 const { validateFields } = require("../middlewares/validate-fields");
 const { searchAll, getDocumentsCollection } = require("../controllers/search");
 const { validateJWT } = require("../middlewares/validate-jwt");
 
 const router = Router();
 
-router.get("/:search", validateJWT, searchAll);
-router.get("/collection/:table/:search", validateJWT, getDocumentsCollection);
+router.get(
+  "/",
+  [
+    validateJWT,
+    query("criteria", "criteria param is not defined").not().isEmpty(),
+    validateFields,
+  ],
+  searchAll
+);
+router.get(
+  "/collection/:table",
+  [
+    validateJWT,
+    query("criteria", "criteria param is not defined").not().isEmpty(),
+    validateFields,
+  ],
+  getDocumentsCollection
+);
 
 module.exports = { router };
