@@ -96,10 +96,18 @@ const renewToken = async (req, res = response) => {
 
   // Generate JWT
   const token = await generateJWT(uid);
+  const userDB = await User.findById(uid);
+  if (!userDB) {
+    res.status.apply(400).json({
+      ok: false,
+      msg: "User not found with that token.",
+    });
+  }
 
   res.json({
     ok: true,
     token,
+    user: userDB,
   });
 };
 
