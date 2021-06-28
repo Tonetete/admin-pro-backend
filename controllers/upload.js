@@ -53,6 +53,7 @@ const fileUpload = (req, res = response) => {
     res.json({
       ok: true,
       msg: `File ${file.name} uploaded successfully`,
+      fileName,
     });
   });
 };
@@ -61,10 +62,12 @@ const getImage = (req, res) => {
   const { table, image } = req.params;
 
   const pathImage = path.join(__dirname, `../uploads/${table}/${image}`);
+
   if (fs.existsSync(pathImage)) {
     res.sendFile(pathImage);
+  } else {
+    res.sendFile(path.join(__dirname, `../uploads/no-image-available.png`));
   }
-  res.sendFile(path.join(__dirname, `../uploads/no-image-available.jpeg`));
 };
 
 module.exports = {
