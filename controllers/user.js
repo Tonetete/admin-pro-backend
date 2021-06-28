@@ -81,7 +81,7 @@ const updateUser = async (req, res = response) => {
     // Updates
     if (!userDB.google) {
       fields.email = email;
-    } else {
+    } else if (userDB.google && fields.email && fields.email !== userDB.email) {
       return res.status(400).json({
         ok: false,
         msg: "Cannot modified google user's email",
