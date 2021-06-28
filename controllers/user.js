@@ -79,7 +79,15 @@ const updateUser = async (req, res = response) => {
     }
 
     // Updates
-    fields.email = email;
+    if (!userDB.google) {
+      fields.email = email;
+    } else {
+      return res.status(400).json({
+        ok: false,
+        msg: "Cannot modified google user's email",
+      });
+    }
+
     const userUpdated = await User.findByIdAndUpdate(uid, fields, {
       new: true,
     });
@@ -114,6 +122,7 @@ const deleteUser = async (req, res) => {
     res.json({
       ok: true,
       msg: "User deleted.",
+      user: userDB,
     });
   } catch (error) {
     res.status(500).json({
