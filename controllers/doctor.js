@@ -2,14 +2,51 @@ const { response } = require("express");
 const Doctor = require("../models/doctor");
 const Hospital = require("../models/hospital");
 
+const getDoctorById = async (req, res = response) => {
+  const { id } = req.params;
+
+  try {
+    const doctorDB = await Doctor.findById(id)
+      .populate("user", "name img")
+      .populate("hospital", "name img");
+
+    if (!doctorDB) {
+      res.status(404).json({
+        ok: false,
+        msg: "Doctor not found by that id",
+      });
+    }
+
+    res.json({
+      ok: true,
+      doctor: doctorDB,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      ok: false,
+      msg: "Unexpected error. Check logs.",
+    });
+  }
+};
+
 const getDoctors = async (req, res = response) => {
-  const doctors = await Doctor.find()
-    .populate("user", "name img")
-    .populate("hospital", "name img");
+  const from = Number(req.query.from) || 0;
+
+  const [doctors, total] = await Promise.all([
+    await Doctor.find()
+      .populate("user", "name img")
+      .populate("hospital", "name img")
+      .skip(from)
+      .limit(5),
+    Doctor.countDocuments(),
+  ]);
 
   res.json({
     ok: true,
     doctors,
+    total,
   });
 };
 
@@ -129,4 +166,5 @@ module.exports = {
   createDoctor,
   updateDoctor,
   deleteDoctor,
+  getDoctorById,
 };

@@ -5,6 +5,7 @@ const {
   createDoctor,
   deleteDoctor,
   getDoctors,
+  getDoctorById,
   updateDoctor,
 } = require("../controllers/Doctor");
 const { validateJWT } = require("../middlewares/validate-jwt");
@@ -29,11 +30,14 @@ router.put(
   [
     validateJWT,
     check("name", "name field is mandatory").not().isEmpty(),
+    check("hospital", "hospital field is mandatory").not().isEmpty(),
     validateFields,
   ],
   updateDoctor
 );
 
 router.delete("/:id", validateJWT, deleteDoctor);
+
+router.get("/:id", validateJWT, getDoctorById);
 
 module.exports = { router };
