@@ -7,7 +7,11 @@ const {
   updateUser,
   deleteUser,
 } = require("../controllers/user");
-const { validateJWT } = require("../middlewares/validate-jwt");
+const {
+  validateJWT,
+  validateAdminRole,
+  validateAdminRoleOrSameUser,
+} = require("../middlewares/validate-jwt");
 
 const router = Router();
 
@@ -28,14 +32,15 @@ router.put(
   "/:id",
   [
     validateJWT,
+    validateAdminRoleOrSameUser,
     check("name", "Name is mandatory").not().isEmpty(),
     check("email", "Email is mandatory").isEmail(),
-    check("role", "Role is mandatory").not().isEmpty(),
+    // check("role", "Role is mandatory").not().isEmpty(),
     validateFields,
   ],
   updateUser
 );
 
-router.delete("/:id", validateJWT, deleteUser);
+router.delete("/:id", [validateJWT, validateAdminRole], deleteUser);
 
 module.exports = { router };
