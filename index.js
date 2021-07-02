@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const { PORT } = process.env;
 
+const path = require("path");
 const cors = require("cors");
 const express = require("express");
 const { dbConnection } = require("./database/config");
@@ -33,6 +34,10 @@ app.use("/api/doctors", routerDoctor);
 app.use("/api/search", routerSearch);
 app.use("/api/login", routerAuth);
 app.use("/api/upload", routerUpload);
+
+app.get("*", (req, res) => {
+  res.sendFile(path(__dirname, "public/index.html")); // to redirect defautl routes to index.html you don't lose track of angular routes
+});
 
 // Init server
 
