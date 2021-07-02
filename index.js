@@ -36,7 +36,7 @@ app.use("/api/login", routerAuth);
 app.use("/api/upload", routerUpload);
 
 app.get("*", (req, res) => {
-  res.sendFile(path(__dirname, "public/index.html")); // to redirect defautl routes to index.html you don't lose track of angular routes
+  res.sendFile(path.join(__dirname, "public/index.html")); // to redirect defautl routes to index.html you don't lose track of angular routes
 });
 
 // Init server
