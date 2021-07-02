@@ -22,7 +22,7 @@ const getDoctorById = async (req, res = response) => {
       doctor: doctorDB,
     });
   } catch (error) {
-    // console.log(error);
+    console.log(error);
 
     res.status(500).json({
       ok: false,
@@ -76,7 +76,7 @@ const createDoctor = async (req, res = response) => {
       doctor: doctorDB,
     });
   } catch (error) {
-    // console.log(error);
+    console.log(error);
 
     res.status(500).json({
       ok: false,
@@ -125,7 +125,7 @@ const updateDoctor = async (req, res = response) => {
       doctor: doctorUpdated,
     });
   } catch (error) {
-    // console.log(error);
+    console.log(error);
 
     res.status(500).json({
       ok: false,
@@ -153,7 +153,7 @@ const deleteDoctor = async (req, res = response) => {
       msg: "Doctor deleted.",
     });
   } catch (error) {
-    // console.log(error);
+    console.log(error);
     res.status(500).json({
       ok: false,
       msg: "Unexpected error. Please check logs",

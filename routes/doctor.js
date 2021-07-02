@@ -7,7 +7,7 @@ const {
   getDoctors,
   getDoctorById,
   updateDoctor,
-} = require("../controllers/Doctor");
+} = require("../controllers/doctor");
 const { validateJWT } = require("../middlewares/validate-jwt");
 
 const router = Router();
